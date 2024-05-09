@@ -1,0 +1,35 @@
+# View first two rows of data
+import pandas as pd
+data = pd.read_csv('creditcard.csv')
+data.head(2)
+
+# predict the class variable using neural network and dividing the data with 80% train and 20% test data
+
+from sklearn.model_selection import train_test_split
+import tensorflow as tf
+
+# Separate features and target variable
+X = data.drop('Class', axis=1)
+y = data['Class']
+
+# Split data into train and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Build the neural network model
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(64, activation='relu', input_shape=(X_train.shape[1],)),
+    tf.keras.layers.Dense(32, activation='relu'),
+    tf.keras.layers.Dense(1, activation='sigmoid')
+])
+
+# Compile the model
+model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+# Train the model
+model.fit(X_train, y_train, epochs=10)
+
+# Evaluate the model on the test set
+loss, accuracy = model.evaluate(X_test, y_test)
+print('Test loss:', loss)
+print('Test accuracy:', accuracy)
+
